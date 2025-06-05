@@ -1,12 +1,12 @@
-import { useBoardStore } from '../store';
+import { useBoardStore } from "../store";
 
-const ControllerDetailModal = ({ onClose }) => {
-  const { addBoard } = useBoardStore();
-  // zustand를이용하여 상태관리를 하도록 변경합니다.
-  // handleForm에서 data를 만들고 있습니다. 이 data를 할당해야합니다.
-  
+const ControllerEditModal = ({ parentClose ,onClose, item }) => {
+  const { editBoard } =useBoardStore();
+  console.log(item);
+
   const handleForm = (e) => {
     e.preventDefault();
+
 
     const formData = new FormData(e.target);
     const data = {
@@ -16,8 +16,9 @@ const ControllerDetailModal = ({ onClose }) => {
       desc: formData.get('desc'),
       created_at: new Date().toISOString().split('T')[0],
     };
-    addBoard(data);
+    editBoard(item.id, data);
     onClose();
+    parentClose();
   };
   return (
     <div onClick={onClose} className="fixed inset-0 flex items-center justify-center bg-black/70 bg-opacity-50 z-50">
@@ -25,7 +26,7 @@ const ControllerDetailModal = ({ onClose }) => {
         <h2 className="text-xl font-semibold mb-4 whitespace-break-spaces">업무 추가</h2>
         <form onSubmit={(e) => handleForm(e)} className="flex flex-col gap-2">
           <div>업무 분류</div>
-          <select className="border border-gray-300 rounded-md p-2" name="type" id="type">
+          <select defaultValue={item.type} className="border border-gray-300 rounded-md p-2" name="type" id="type">
             <option value="todo">할 일</option>
             <option value="inprogress">진행 중</option>
             <option value="done">완료</option>
@@ -35,6 +36,7 @@ const ControllerDetailModal = ({ onClose }) => {
             type="text"
             name="title"
             id="title"
+            defaultValue={item.title}
             placeholder="업무 제목을 입력하세요."
             className="border border-gray-300 rounded-md p-2"
             required
@@ -43,6 +45,7 @@ const ControllerDetailModal = ({ onClose }) => {
           <textarea
             name="desc"
             id="desc"
+            defaultValue={item.desc}
             placeholder="업무 내용을 입력하세요."
             className="border border-gray-300 rounded-md p-2 resize-none"
             required
@@ -52,7 +55,7 @@ const ControllerDetailModal = ({ onClose }) => {
               type="submit"
               className="cursor-pointer mt-4 bg-black text-white px-4 py-2 rounded hover:bg-stone-600"
             >
-              추가
+              수정
             </button>
             <button
               onClick={onClose}
@@ -67,4 +70,4 @@ const ControllerDetailModal = ({ onClose }) => {
   );
 };
 
-export default ControllerDetailModal;
+export default ControllerEditModal;
